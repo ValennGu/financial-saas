@@ -15,6 +15,13 @@
       "when": 1724260743177,
       "tag": "0001_legal_centennial",
       "breakpoints": true
+    },
+    {
+      "idx": 2,
+      "version": "7",
+      "when": 1724395643192,
+      "tag": "0002_bright_iron_man",
+      "breakpoints": true
     }
   ]
 }
