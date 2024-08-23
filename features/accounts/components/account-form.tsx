@@ -1,5 +1,5 @@
 import { z } from "zod";
-import { Trash, Trash2, Trash2Icon } from "lucide-react";
+import { TrashIcon } from "lucide-react";
 import { useForm } from "react-hook-form";
 import { zodResolver } from "@hookform/resolvers/zod";
 
@@ -80,7 +80,7 @@ export const AccountForm = ({
             disabled={disabled}
             variant="outline"
           >
-            <Trash className="size-4" /> Delete account
+            <TrashIcon className="size-4 mr-2" /> Delete account
           </Button>
         )}
       </form>
