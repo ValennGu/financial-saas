@@ -10,11 +10,15 @@ import { DataTable } from "@/components/data-table";
 import { Loader2, PlusIcon } from "lucide-react";
 import { columns } from "./columns";
 import { Skeleton } from "@/components/ui/skeleton";
+import { useBulkDeleteAccounts } from "@/features/accounts/api/use-bulk-delete";
 
 const AccountsPage = () => {
   const newAccount = useNewAccount();
+  const deleteAccounts = useBulkDeleteAccounts();
   const accountQuery = useGetAccounts();
   const accounts = accountQuery.data || [];
+
+  const isDisabled = accountQuery.isLoading || deleteAccounts.isPending;
 
   if (accountQuery.isLoading) {
     return (
@@ -48,8 +52,11 @@ const AccountsPage = () => {
             columns={columns}
             data={accounts}
             filterKey="email"
-            onDelete={() => {}}
-            disabled={false}
+            onDelete={(rows) => {
+              const ids = rows.map((r) => r.original.id);
+              deleteAccounts.mutate({ ids });
+            }}
+            disabled={isDisabled}
           />
         </CardContent>
       </Card>
