@@ -23,7 +23,7 @@ type FormValues = z.input<typeof formSchema>;
 
 type Props = {
   id?: string;
-  defaultValues?: string;
+  defaultValues?: {};
   onSubmit: (values: FormValues) => void;
   onDelete?: () => void;
   disabled?: boolean;
@@ -38,6 +38,7 @@ export const AccountForm = ({
 }: Props) => {
   const form = useForm<FormValues>({
     resolver: zodResolver(formSchema),
+    defaultValues: { ...defaultValues },
   });
 
   const handleSubmit = (values: FormValues) => {
@@ -62,6 +63,7 @@ export const AccountForm = ({
               <FormLabel>Name</FormLabel>
               <FormControl>
                 <Input
+                  autoFocus
                   placeholder="e. g. Cash, Bank, Credit Card"
                   disabled={disabled}
                   {...field}
