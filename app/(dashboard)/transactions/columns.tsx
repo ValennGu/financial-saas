@@ -6,7 +6,7 @@ import { format } from "date-fns";
 import { ColumnDef } from "@tanstack/react-table";
 
 import { client } from "@/lib/hono";
-import { formatCurrency } from "@/lib/utils";
+import { convertAmountFromMiliunits, formatCurrency } from "@/lib/utils";
 
 import { Actions } from "@/app/(dashboard)/transactions/actions";
 import { Button } from "@/components/ui/button";
@@ -120,7 +120,7 @@ export const columns: ColumnDef<ResponseType>[] = [
           variant={amount < 0 ? "destructive" : "primary"}
           className="text-xs font-medium px-3.5 py-2.5"
         >
-          {formatCurrency(amount)}
+          {formatCurrency(convertAmountFromMiliunits(amount))}
         </Badge>
       );
     },
