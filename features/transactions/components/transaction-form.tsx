@@ -73,8 +73,6 @@ export const TransactionForm = ({
     onSubmit({
       ...values,
       amount: amountInMiliunits,
-      account_id: values.accountId,
-      category_id: values.categoryId ?? "",
     });
   };
 

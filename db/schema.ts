@@ -38,27 +38,23 @@ export const transactions = pgTable("transactions", {
   payee: text("payee").notNull(),
   notes: text("notes"),
   date: timestamp("date", { mode: "date" }).notNull(),
-  account_id: text("account_id")
-    // When referenced account is deleted all transactions linked to it are deleted.
+  accountId: text("account_id")
     .references(() => accounts.id, {
       onDelete: "cascade",
     })
     .notNull(),
-  category_id: text("category_id")
-    // When referenced category is deleted all categories from linked transactions are set to null.
-    .references(() => categories.id, {
-      onDelete: "set null",
-    })
-    .notNull(),
+  categoryId: text("category_id").references(() => categories.id, {
+    onDelete: "set null",
+  }),
 });
 
 export const transactionsRelations = relations(transactions, ({ one }) => ({
   accounts: one(accounts, {
-    fields: [transactions.account_id],
+    fields: [transactions.accountId],
     references: [accounts.id],
   }),
   categories: one(categories, {
-    fields: [transactions.category_id],
+    fields: [transactions.categoryId],
     references: [categories.id],
   }),
 }));
