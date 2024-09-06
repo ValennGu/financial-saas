@@ -36,7 +36,6 @@ const TransactionsPage = () => {
   const transactions = transactionsQuery.data || [];
 
   const onUpload = (results: typeof INITIAL_IMPORT_RESULTS) => {
-    console.log(results);
     setVariant(VARIANTS.IMPORT);
     setImportResults(results);
   };
