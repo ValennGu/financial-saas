@@ -1,6 +1,9 @@
+import { useState } from "react";
+import { format, parse } from "date-fns";
+
 import { Card, CardHeader, CardTitle, CardContent } from "@/components/ui/card";
 import { Button } from "@/components/ui/button";
-import { useState } from "react";
+import { convertAmountToMiliunits } from "@/lib/utils";
 import { ImportTable } from "./import-table";
 
 const dateFormat = "yyyy-MM-dd HH:mm:ss";
@@ -49,6 +52,54 @@ export const ImportCard = ({ data, onCancel, onSubmit }: Props) => {
     });
   };
 
+  const progress = Object.values(selectedColumns).filter(Boolean).length;
+
+  const handleContinue = () => {
+    const getColumnIndex = (column: string) => {
+      return column.split("_")[1];
+    };
+
+    const mappedData = {
+      headers: headers.map((_header, index) => {
+        const columnIndex = getColumnIndex(`column_${index}`); // Review - looks unnecesary.
+        return selectedColumns[`column_${columnIndex}`] || null;
+      }),
+      body: body
+        .map((row) => {
+          const transformedRow = row.map((cell, index) => {
+            const columnIndex = getColumnIndex(`column_${index}`);
+            return selectedColumns[`column_${columnIndex}`] ? cell : null;
+          });
+
+          return transformedRow.every((item) => item === null)
+            ? []
+            : transformedRow;
+        })
+        .filter((row) => row.length !== 0),
+    };
+
+    const arrayOfData = mappedData.body.map((row) => {
+      return row.reduce((acc: any, cell, index) => {
+        const header = mappedData.headers[index];
+
+        if (header !== null) {
+          acc[header] = cell;
+        }
+
+        return acc;
+      }, {});
+    });
+
+    const formattedData = arrayOfData.map((item) => ({
+      ...item,
+      amount: convertAmountToMiliunits(parseFloat(item.amount)),
+      date: format(parse(item.date, dateFormat, new Date()), outputFormat),
+    }));
+
+    console.log(formattedData);
+    // onSubmit(formattedData);
+  };
+
   return (
     <div className="max-w-screen-2xl mx-auto w-full pb-10 -mt-24">
       <Card className="border-none drop-shadow-sm">
@@ -56,9 +107,17 @@ export const ImportCard = ({ data, onCancel, onSubmit }: Props) => {
           <CardTitle className="text-xl line-clamp-1">
             Import transaction
           </CardTitle>
-          <div className="flex items-center gap-2">
-            <Button size="sm" onClick={onCancel}>
+          <div className="flex flex-col lg:flex-row items-center gap-2">
+            <Button size="sm" onClick={onCancel} className="w-full lg:auto">
               Cancel
+            </Button>
+            <Button
+              size="sm"
+              disabled={progress < requiredOptions.length}
+              className="w-full lg:auto"
+              onClick={handleContinue}
+            >
+              Continue ({progress} / {requiredOptions.length})
             </Button>
           </div>
         </CardHeader>
